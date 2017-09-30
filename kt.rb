@@ -2,37 +2,21 @@ class Knights_Travail
 
   def initialize
     @visited = []
-    @possible = []
     @route = []
   end
 
   def choose_move(loc, dest)
-    @route << loc
-    return @route if show_moves(loc).include?(dest)
-
-    moves = show_moves(loc) # delete route move overlap
-    loc = moves[rand(0..moves.length-1)]
-
-    choose_move(loc, dest)
+    loop do
+      moves = show_moves(loc)
+      loc = moves[0]
+      @route << loc
+      return @route if is_a_cycle?(loc)
+      @visited << loc
+    end
   end
 
-  def all_moves(loc) #crack this and the actual search algorithm will be easy
-    moves = []
-    moves << loc
-    @visited << loc
-
-    #while !moves.empty?
-    500.times do
-      show_moves(loc).each { |m| moves << m }
-      moves.uniq!
-      before = moves.length
-      moves.each { |e| moves.delete(e) if @visited.include?(e) }
-      if !moves.empty?
-        loc = moves[0]
-        @visited << loc
-      end
-    end
-    @visited.uniq!
+  def is_a_cycle?(loc)
+    @visited.include?(loc)
   end
 
   def show_moves(loc)
@@ -52,4 +36,4 @@ class Knights_Travail
 end
 
 kt = Knights_Travail.new
-print kt.all_moves([3, 1])
+print kt.choose_move([3, 1], [7, 7])
