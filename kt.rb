@@ -3,16 +3,31 @@ class Knights_Travail
   def initialize
     @visited = []
     @route = []
+    @no_visit = []
   end
 
   def choose_move(loc, dest)
-    loop do
+    x = 0
+    until loc == dest do
       moves = show_moves(loc)
-      loc = moves[0]
+      until !@no_visit.include?(moves[x])
+        x += 1
+      end
+      loc = moves[x]
+      x = 0
       @route << loc
-      return @route if is_a_cycle?(loc)
+      if is_a_cycle?(loc)
+        i = -2
+        @no_visit << loc
+        until @visited[i] == loc
+          @no_visit << @visited[i]
+          i -= 1
+        end
+        loc = @visited[i]
+      end
       @visited << loc
     end
+    @visited
   end
 
   def is_a_cycle?(loc)
