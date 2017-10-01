@@ -1,3 +1,5 @@
+require 'benchmark'
+
 def find_route(loc, dest)
   visited = [loc]
   no_visit = []
@@ -89,4 +91,10 @@ def show_moves(loc)
     moves
 end
 
-print find_route([0, 0], [7, 7])
+def benchmark(run)
+  value = Benchmark.measure { run.times { find_route([2, 2], [2, 3]) } }
+  avg_run_time = value / run
+end
+
+#print benchmark(20)
+print find_route([2, 3], [2, 2])
