@@ -2,7 +2,6 @@ class Knights_Travail
 
   def initialize
     @visited = []
-    @route = []
     @no_visit = []
   end
 
@@ -11,7 +10,6 @@ class Knights_Travail
       moves = show_moves(loc)
       moves.each { |m| moves.delete(m) if @no_visit.include?(m) }
       loc = lightest(moves, dest)
-      @route << loc
       loc = backtrack(loc) if is_a_cycle?(loc)
       @visited << loc
     end
@@ -59,4 +57,4 @@ class Knights_Travail
 end
 
 kt = Knights_Travail.new
-print kt.choose_move([3, 1], [7, 7])
+print kt.choose_move([3, 1], [0, 0])
