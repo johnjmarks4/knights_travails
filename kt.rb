@@ -5,7 +5,7 @@ class Knights_Travail
     @no_visit = []
   end
 
-  def choose_move(loc, dest)
+  def find_route(loc, dest)
     until loc == dest do
       moves = show_moves(loc)
       moves.each { |m| moves.delete(m) if @no_visit.include?(m) }
@@ -13,22 +13,7 @@ class Knights_Travail
       loc = backtrack(loc) if is_a_cycle?(loc)
       @visited << loc
     end
-    cut_to_chase(@visited)
-  end
-
-  def cut_to_chase(visited)
-    counter = 0
-    visited.each_with_index do |e, i| 
-      if visited.count(e) > 1
-        counter += 1
-        if counter == 2
-          puts "ran"
-          chase = i
-          visited.slice!(0, chase + 1)
-        end
-      end
-    end
-    visited
+    @visited.uniq!
   end
 
   def backtrack(loc)
@@ -72,4 +57,4 @@ class Knights_Travail
 end
 
 kt = Knights_Travail.new
-print kt.choose_move([3, 1], [0, 0])
+print kt.find_route([0, 0], [7, 7])
