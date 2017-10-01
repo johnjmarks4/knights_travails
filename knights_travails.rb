@@ -14,24 +14,40 @@ def find_route(loc, dest)
   find_shortcuts(visited.uniq!)
 end
 
-#fix this
 def find_shortcuts(visited)
-  shortcuts = []
+  candidates = []
   visited.each do |v|
     show_moves(v).each do |m|
-      if !(show_moves(m) & visited[visited.index(v)..-1]).empty? #distance saved shouldn't be hardcoded
-        shortcut_start = visited.index(v)
-        shortcut_end = visited.index((show_moves(m) & visited[visited.index(v)..-1])[0])
-        shortcuts << [v, m, visited[shortcut_start..shortcut_end].length]
-        best = shortcuts.max_by { |s| s[2] }
-        visited[shortcut_start..shortcut_end] = [m]
-        break
+      if !visited.include?(m)
+        show_moves(m).each do |s|
+          if visited.include?(s)
+            start = v
+            finish = s
+            shortcut = m
+            candidates << [start, shortcut, finish]
+          end
+        end
       end
     end
   end
-  visited
+  fastest = find_fastest(candidates, visited)
+  take_shortcut(fastest, visited)
 end
 
+def find_fastest(candidates, visited)
+  candidates.max_by do |c|
+    start, finish = visited.index(c[0]), visited.index(c[2])
+    visited[start..finish].length
+  end
+end
+
+def take_shortcut(shortcut, visited)
+  start = visited.index(shortcut[0]) + 1
+  detour = [shortcut[1]]
+  finish = visited.index(shortcut[2]) - 1
+  visited[start..finish] = detour
+  visited
+end
 
 def backtrack(loc, no_visit, visited)
   i = -2
