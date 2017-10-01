@@ -1,5 +1,5 @@
 def find_route(loc, dest)
-  visited = []
+  visited = [loc]
   no_visit = []
   until loc == dest do
     moves = show_moves(loc)
@@ -11,8 +11,27 @@ def find_route(loc, dest)
     end
     visited << loc
   end
-  visited.uniq!
+  find_shortcuts(visited.uniq!)
 end
+
+#fix this
+def find_shortcuts(visited)
+  shortcuts = []
+  visited.each do |v|
+    show_moves(v).each do |m|
+      if !(show_moves(m) & visited[visited.index(v)..-1]).empty? #distance saved shouldn't be hardcoded
+        shortcut_start = visited.index(v)
+        shortcut_end = visited.index((show_moves(m) & visited[visited.index(v)..-1])[0])
+        shortcuts << [v, m, visited[shortcut_start..shortcut_end].length]
+        best = shortcuts.max_by { |s| s[2] }
+        visited[shortcut_start..shortcut_end] = [m]
+        break
+      end
+    end
+  end
+  visited
+end
+
 
 def backtrack(loc, no_visit, visited)
   i = -2
