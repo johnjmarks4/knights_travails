@@ -13,7 +13,22 @@ class Knights_Travail
       loc = backtrack(loc) if is_a_cycle?(loc)
       @visited << loc
     end
-    @visited
+    cut_to_chase(@visited)
+  end
+
+  def cut_to_chase(visited)
+    counter = 0
+    visited.each_with_index do |e, i| 
+      if visited.count(e) > 1
+        counter += 1
+        if counter == 2
+          puts "ran"
+          chase = i
+          visited.slice!(0, chase + 1)
+        end
+      end
+    end
+    visited
   end
 
   def backtrack(loc)
