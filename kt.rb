@@ -12,18 +12,20 @@ class Knights_Travail
       moves.each { |m| moves.delete(m) if @no_visit.include?(m) }
       loc = lightest(moves, dest)
       @route << loc
-      if is_a_cycle?(loc)
-        i = -2
-        @no_visit << loc
-        until @visited[i] == loc
-          @no_visit << @visited[i]
-          i -= 1
-        end
-        loc = @visited[i]
-      end
+      loc = backtrack(loc) if is_a_cycle?(loc)
       @visited << loc
     end
     @visited
+  end
+
+  def backtrack(loc)
+    i = -2
+    @no_visit << loc
+    until @visited[i] == loc
+      @no_visit << @visited[i]
+      i -= 1
+    end
+    loc = @visited[i]
   end
 
   def lightest(moves, dest)
