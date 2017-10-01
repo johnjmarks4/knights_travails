@@ -7,14 +7,10 @@ class Knights_Travail
   end
 
   def choose_move(loc, dest)
-    x = 0
     until loc == dest do
       moves = show_moves(loc)
-      until !@no_visit.include?(moves[x])
-        x += 1
-      end
-      loc = moves[x]
-      x = 0
+      moves.each { |m| moves.delete(m) if @no_visit.include?(m) }
+      loc = lightest(moves, dest)
       @route << loc
       if is_a_cycle?(loc)
         i = -2
@@ -28,6 +24,16 @@ class Knights_Travail
       @visited << loc
     end
     @visited
+  end
+
+  def lightest(moves, dest)
+    all = []
+    moves.each do |m|
+      all << [m, (m.inject(:+) - dest.inject(:+)).abs]
+    end
+
+    best = all.min_by { |m| m[1] }
+    best[0]
   end
 
   def is_a_cycle?(loc)
