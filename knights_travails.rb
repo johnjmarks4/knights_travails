@@ -13,7 +13,7 @@ def find_route(loc, dest)
     end
     visited << loc
   end
-  find_shortcuts(visited.uniq!)
+  find_shortcuts(visited.uniq)
 end
 
 def find_shortcuts(visited)
@@ -92,9 +92,9 @@ def show_moves(loc)
 end
 
 def benchmark(run)
-  value = Benchmark.measure { run.times { find_route([2, 2], [2, 3]) } }
+  value = Benchmark.measure { run.times { find_route([1, 0], [7, 1]) } }
   avg_run_time = value / run
 end
 
-#print benchmark(20)
-print find_route([2, 3], [2, 2])
+print benchmark(1000)
+#print find_route([1, 0], [7, 1])
