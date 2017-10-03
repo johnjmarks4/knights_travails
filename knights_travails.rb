@@ -2,6 +2,7 @@ require 'benchmark'
 
 def find_route(loc, dest)
   visited = [loc]
+  return visited if loc == dest
   no_visit = []
   until loc == dest do
     moves = show_moves(loc)
@@ -13,27 +14,32 @@ def find_route(loc, dest)
     end
     visited << loc
   end
-  find_shortcuts(visited.uniq)
+  visited.uniq!
+  find_shortcuts(visited)
 end
 
 def find_shortcuts(visited)
   candidates = []
-  visited.each do |v|
-    show_moves(v).each do |m|
-      if !visited.include?(m)
-        show_moves(m).each do |s|
-          if visited.include?(s)
-            start = v
-            finish = s
-            shortcut = m
+  visited.each do |s|
+    show_moves(s).each do |c|
+      if !visited.include?(c)
+        show_moves(c).each do |f|
+          if visited.include?(f) && s != f
+            start = s
+            finish = f
+            shortcut = c
             candidates << [start, shortcut, finish]
           end
         end
       end
     end
   end
-  fastest = find_fastest(candidates, visited)
-  take_shortcut(fastest, visited)
+  if !candidates.empty?
+    fastest = find_fastest(candidates, visited)
+    take_shortcut(fastest, visited)
+  else
+    visited
+  end
 end
 
 def find_fastest(candidates, visited)
@@ -91,10 +97,12 @@ def show_moves(loc)
     moves
 end
 
-def benchmark(run)
-  value = Benchmark.measure { run.times { find_route([1, 0], [7, 1]) } }
-  avg_run_time = value / run
+def benchmark(runs, loc, dest)
+  value = Benchmark.measure { runs.times { find_route(loc, dest) } }
+  print avg_run_time = value / runs
 end
 
-print benchmark(1000)
-#print find_route([1, 0], [7, 1])
+loc = [1, 0]
+dest = [0, 0]
+#benchmark(1000, loc, dest)
+print find_route(loc, dest)
