@@ -5,6 +5,7 @@ def find_route(loc, dest)
   return visited if loc == dest
   no_visit = []
   until loc == dest do
+    puts visited.inspect
     moves = show_moves(loc)
     moves.each { |m| moves.delete(m) if no_visit.include?(m) }
     loc = lightest(moves, dest)
@@ -98,6 +99,37 @@ def show_moves(loc)
     moves
 end
 
+def test_all
+  coords = all_combos
+  coords.each do |c|
+    find_route(c[0], c[1])
+  end
+end
+
+def all_combos
+  coords = []
+  (0..7).to_a.each do |f|
+    (0..7).to_a.each do |l|
+      coords << [f, l]
+    end
+  end
+  ary = []
+  coords.each do |c|
+    ary << pair(c, coords)
+  end
+  con = []
+  ary.each { |s| s.each { |p| con << p } }
+  con
+end
+
+def pair(loc, dests)
+  con = []
+  dests.each do |dest|
+    con << [loc, dest]
+  end
+  con
+end
+
 def benchmark(runs, loc, dest)
   value = Benchmark.measure { runs.times { find_route(loc, dest) } }
   print avg_run_time = value / runs
@@ -106,4 +138,5 @@ end
 loc = [0, 4]
 dest = [5, 3]
 #benchmark(1000, loc, dest)
-print find_route(loc, dest)
+test_all
+#print find_route(loc, dest)
