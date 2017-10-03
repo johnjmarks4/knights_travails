@@ -58,7 +58,8 @@ def take_shortcut(shortcut, visited)
 end
 
 def backtrack(loc, no_visit, visited)
-  i = -2
+  visited.length < 4 ? i = -1 : i = -2
+
   no_visit << loc
   until visited[i] == loc
     no_visit << visited[i]
@@ -102,7 +103,7 @@ def benchmark(runs, loc, dest)
   print avg_run_time = value / runs
 end
 
-loc = [1, 0]
-dest = [0, 0]
+loc = [0, 4]
+dest = [5, 3]
 #benchmark(1000, loc, dest)
 print find_route(loc, dest)
