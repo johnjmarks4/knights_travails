@@ -147,7 +147,7 @@ def pair(loc, dests)
   con
 end
 
-loc = [0, 0]
+loc = [7, 7]
 dest = [0, 0]
 #benchmark(1000, loc, dest)
 #print test_all
