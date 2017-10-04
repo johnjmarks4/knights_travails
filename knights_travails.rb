@@ -109,10 +109,8 @@ def print_message
   self.each { |m| puts m.inspect }
 end
 
-def benchmark(&test_method)
-  arg = self[0]
-  runs = self[1]
-  value = Benchmark.measure { runs.times { test_method.call(arg) } }
+def benchmark(method_tested, arg, runs)
+  value = Benchmark.measure { runs.times { method_tested.call(arg) } }
   print avg_run_time = value / runs
 end
 
@@ -151,11 +149,12 @@ end
 
 loc = [7, 7]
 dest = [0, 0]
-#benchmark(1000, loc, dest)
-#print test_all
-[[loc, dest], 100].benchmark do |i|
+
+=begin
+method_tested = Proc.new do |i|
   find_route(i[0], i[1])
 end
+benchmark(method_tested, [loc, dest], 100)
+=end
 
-
-#find_route(loc, dest).print_message
+find_route(loc, dest).print_message
