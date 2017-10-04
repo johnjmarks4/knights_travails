@@ -109,8 +109,10 @@ def print_message
   self.each { |m| puts m.inspect }
 end
 
-def benchmark(runs, loc, dest)
-  value = Benchmark.measure { runs.times { find_route(loc, dest) } }
+def benchmark(&test_method)
+  arg = self[0]
+  runs = self[1]
+  value = Benchmark.measure { runs.times { test_method.call(arg) } }
   print avg_run_time = value / runs
 end
 
@@ -135,7 +137,7 @@ def all_combos
     ary << pair(c, coords)
   end
   con = []
-  ary.each { |s| s.each { |p| con << p } }
+  ary.each { |s| s.each { |e| con << e } }
   con
 end
 
@@ -151,4 +153,9 @@ loc = [7, 7]
 dest = [0, 0]
 #benchmark(1000, loc, dest)
 #print test_all
-find_route(loc, dest).print_message
+[[loc, dest], 100].benchmark do |i|
+  find_route(i[0], i[1])
+end
+
+
+#find_route(loc, dest).print_message
