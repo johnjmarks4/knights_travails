@@ -5,9 +5,10 @@ def find_route(loc, dest)
   return visited if loc == dest
   no_visit = []
   until loc == dest do
-    puts visited.inspect
     moves = show_moves(loc)
-    moves.each { |m| moves.delete(m) if no_visit.include?(m) }
+    no_visit << loc
+    moves -= no_visit
+    return loc if moves.length == 0
     loc = lightest(moves, dest)
     if is_a_cycle?(loc, visited)
       result = backtrack(loc, no_visit, visited)
@@ -59,13 +60,12 @@ def take_shortcut(shortcut, visited)
 end
 
 def backtrack(loc, no_visit, visited)
-  visited.length < 4 ? i = -1 : i = -2
-
-  no_visit << loc
-  until visited[i] == loc
-    no_visit << visited[i]
-    i -= 1
+  i = 0
+  visited.each_with_index do |m, vi|
+    i = vi
+    break if m == loc
   end
+  visited[i+1..-1].each { |m| no_visit << m }
   loc = visited[i]
   [loc, no_visit]
 end
@@ -99,6 +99,13 @@ def show_moves(loc)
     moves
 end
 
+def benchmark(runs, loc, dest)
+  value = Benchmark.measure { runs.times { find_route(loc, dest) } }
+  print avg_run_time = value / runs
+end
+
+# The last 3 methods test find_route for every possible board route
+
 def test_all
   coords = all_combos
   coords.each do |c|
@@ -130,13 +137,7 @@ def pair(loc, dests)
   con
 end
 
-def benchmark(runs, loc, dest)
-  value = Benchmark.measure { runs.times { find_route(loc, dest) } }
-  print avg_run_time = value / runs
-end
-
-loc = [0, 4]
-dest = [5, 3]
+loc = [2, 6]
+dest = [0, 6]
 #benchmark(1000, loc, dest)
-test_all
-#print find_route(loc, dest)
+print find_route(loc, dest)
